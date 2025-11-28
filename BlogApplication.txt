@@ -9,6 +9,7 @@ use blogDB
     content: "MongoDB is a NoSQL database used for modern apps.",
     author: "Alice"
   },
+  
   {
     title: "Learning Node.js",
     content: "Node.js works well with MongoDB.",

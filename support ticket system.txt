@@ -5,6 +5,7 @@ use supportDB
 // Add some example support tickets
 db.tickets.insertMany([
   {
+    
     subject: "Login error",
     description: "User cannot log in because of an unknown error.",
     createdAt: new Date()
