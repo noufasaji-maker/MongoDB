@@ -1,0 +1,79 @@
+
+use machineTestDB
+
+ db.Employee.insertMany([
+  { id: 1, Name: "Raju", department: "Sales", leave: 1 },
+  { id: 2, Name: "Sangeetha", department: "Sales", leave: 3 },
+  { id: 3, Name: "Vinay", department: "Operations", leave: 8 },
+  { id: 4, Name: "Abey", department: "Packing", leave: 2 },
+  { id: 5, Name: "Thomas", department: "Packing", leave: 1 },
+  { id: 6, Name: "Muneer", department: "Operations", leave: 7 },
+  { id: 7, Name: "Aparna", department: "Sales", leave: 3 },
+  { id: 8, Name: "Abid", department: "Operations", leave: 9 },
+  { id: 9, Name: "Fathima", department: "Sales", leave: 11 },
+  { id: 10, Name: "Varghese", department: "Operations", leave: 14 }
+])
+
+
+
+ db.Exam.insertMany([
+  { id: 1, employee_id: 2,  exam_status: "Pass" },
+  { id: 2, employee_id: 5,  exam_status: "Fail" },
+  { id: 3, employee_id: 3,  exam_status: "Fail" },
+  { id: 4, employee_id: 8,  exam_status: "Pass" },
+  { id: 5, employee_id: 3,  exam_status: "Pass" },
+  { id: 6, employee_id: 1,  exam_status: "Pass" },
+  { id: 7, employee_id: 6,  exam_status: "Fail" },
+  { id: 8, employee_id: 9,  exam_status: "Pass" },
+  { id: 9, employee_id: 10, exam_status: "Pass" }
+])
+
+
+
+
+ db.Employee.find({ leave: { $gt: 5 }, department: "Sales" })
+
+
+ db.Employee.find({ department: "Operations" }).count()
+
+
+
+ db.Employee.aggregate([
+  { $group: { _id: "$department", totalEmployees: { $sum: 1 } } }
+])
+
+
+
+ db.Employee.aggregate([
+  { $group: { _id: "$department", sumLeave: { $sum: "$leave" } } },
+  { $match: { sumLeave: { $gt: 10 } } }
+])
+
+ db.Employee.aggregate([
+  {
+    $lookup: {
+      from: "Exam",
+      localField: "id",
+      foreignField: "employee_id",
+      as: "exam"
+    }
+  },
+  { $unwind: "$exam" },
+  { $match: { "exam.exam_status": "Pass" } },
+  { $project: { _id: 0, Name: 1 } }
+])
+
+
+
+ db.Employee.aggregate([
+  {
+    $lookup: {
+      from: "Exam",
+      localField: "id",
+      foreignField: "employee_id",
+      as: "exam"
+    }
+  },
+  { $match: { exam: { $eq: [ ] } } },   
+  { $project: { _id: 0, Name: 1 } }
+])
